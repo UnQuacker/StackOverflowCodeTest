@@ -27,7 +27,7 @@ int main()
     DWORD dwRead;
     DWORD dwRead1;
     char chBuffer[16]="abcdefghijklmno";
-    long SectorActual = 0;  // номер сектора
+    long SectorActual = 70;  // номер сектора
     long PosicionInicio = SectorActual * 512;
     long SectorMove = SectorActual * 512;
 
@@ -74,6 +74,8 @@ int main()
         cout << "Fail" << endl;;
         cout << "Last error code: " << GetLastError() << endl;
     }
+
+   
 
     //чтение байтов диска
     if (!::ReadFile(hDisk, buf, sizeof(buf), &dwRead, NULL) || dwRead != sizeof(buf)) { throw win_error(); return 0; };
