@@ -10,29 +10,11 @@ int win_error()
     return 0;
 }
 
-
-//static vector<char> ReadAllBytes(char const* filename)
-//{
-//    ifstream ifs(filename, ios::binary | ios::ate);
-//    ifstream::pos_type pos = ifs.tellg();
-//
-//    if (pos == 0) {
-//        return vector<char>{};
-//    }
-//
-//    vector<char>  result(pos);
-//
-//    ifs.seekg(0, ios::beg);
-//    ifs.read(&result[0], pos);
-//
-//    return result;
-//}
-
 int main()
 // что по задумке должен программа должны была делать:
 // открыть внешний носитель -> создать временный файл -> заполнить данными -> считать его байты -> удалить временный файл -> переместить указатель записи внешнего носителя (hDisk) -> записать туда сохранённый байты
 
-// но программа выдаёт ошибку "Unhandled exception at 0x75C4C3A2 in StackOverFlowCodeTestProject.exe: Microsoft C++ exception: int at memory location 0x009CF2F4." на 79 строке
+// но программа выдаёт ошибку "Unhandled exception at 0x75C4C3A2 in StackOverFlowCodeTestProject.exe: Microsoft C++ exception: int at memory location 0x009CF2F4." на 47 строке
 {
     BOOL fSuccess = false;
 
@@ -49,15 +31,6 @@ int main()
     long PosicionInicio = SectorActual * 512;
     long SectorMove = 6 * 512;
 
-    //for (int i = 0; i < 16; i++) // мусорные данные для заполнения
-    //{
-    //    chBuffer[i] = i % 16;
-    //    if ((i / 16) % 2 == 0)
-    //    {
-    //        chBuffer[i] = 15 - chBuffer[i];
-    //    }
-    //}
-
     long numberOfBytes = sizeof(chBuffer);
 
     //создание временного файла
@@ -70,25 +43,9 @@ int main()
     //запись данных в временный файл
     fSuccess = WriteFile(hFile, chBuffer, numberOfBytes, &dwBytesWritten, NULL);
 
-    /*vector<byte> buffer = ReadAllBytes("D:\\WriteHere.txt");
-    for (const auto& value : buffer) {
-        cout << value;
-    }*/
-
     //попытка прочитать байты файла, тут и выходит ошибка
     if (!::ReadFile(hFile, buffer, sizeof(buffer), &dwRead1, NULL) || dwRead1 != sizeof(buffer)) throw win_error();
     ::CloseHandle(hFile);
-
-    /*fSuccess = DeleteFile("D:\\WriteHere.txt");
-    if (!fSuccess)
-    {
-        printf("DeleteFile failed (%d)\n", GetLastError());
-        return (6);
-    }*/
-
-    //int numberofbytes = sizeof(std::vector<char>) + (sizeof(char) * buffer.size());
-
-    //char* newBuffer = reinterpret_cast<char*>(buffer.data());
 
     //двигаем указатель диска
     DWORD dwPtr = SetFilePointer(hDisk,
