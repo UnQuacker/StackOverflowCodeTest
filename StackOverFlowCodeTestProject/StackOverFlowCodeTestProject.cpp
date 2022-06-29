@@ -20,39 +20,39 @@ int main()
 
     //открытие диска
     HANDLE hDisk = ::CreateFile(R"(\\.\D:)", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (hDisk == INVALID_HANDLE_VALUE) throw win_error();
+    if (hDisk == INVALID_HANDLE_VALUE) { throw win_error(); };
 
     BYTE buf[512];
-    BYTE buffer[1024];
+    BYTE buffer[512];
     DWORD dwRead;
     DWORD dwRead1;
     char chBuffer[16]="abcdefghijklmno";
-    long SectorActual = 100;  // номер сектора
+    long SectorActual = 0;  // номер сектора
     long PosicionInicio = SectorActual * 512;
-    long SectorMove = SectorActual * 1024;
+    long SectorMove = SectorActual * 512;
 
     long numberOfBytes = sizeof(chBuffer);
 
     //создание временного файла
-    HANDLE hFile = ::CreateFile(R"(\\.\D:\\WriteHere.txt)", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-    if (hFile == INVALID_HANDLE_VALUE) { throw win_error(); return 0; };
+    /*HANDLE hFile = ::CreateFile(R"(\\.\D:\\WriteHere.txt)", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) { throw win_error(); return 0; };*/
 
     DWORD dwBytesWritten = 0;
     DWORD dwBytesWritten1 = 0;
 
     //запись данных в временный файл
-    fSuccess = WriteFile(hFile, chBuffer, numberOfBytes, &dwBytesWritten, NULL);
+    //fSuccess = WriteFile(hFile, chBuffer, numberOfBytes, &dwBytesWritten, NULL);
 
     //попытка прочитать байты файла, тут и выходит ошибка
-    try {
+    /*try {
         if (!::ReadFile(hFile, buffer, sizeof(buffer), &dwRead1, NULL)) { cout << GetLastError()<<endl; return 0; };
-    }
+    }*/
 
-    catch (exception e) {
+    /*catch (exception e) {
         cout << GetLastError();
-    }
+    }*/
 
-    ::CloseHandle(hFile);
+    //::CloseHandle(hFile);
 
     //удаление временного файла
     //fSuccess = DeleteFile("D:\\WriteHere.txt"); 
@@ -69,7 +69,7 @@ int main()
         FILE_BEGIN);
 
     //запись сохранённых данных на диск
-    fSuccess = ::WriteFile(hDisk, buffer, sizeof(buffer), &dwBytesWritten1, NULL);
+    fSuccess = ::WriteFile(hDisk, chBuffer, sizeof(chBuffer), &dwBytesWritten1, NULL);
     if (!fSuccess) {
         cout << "Fail" << endl;;
         cout << "Last error code: " << GetLastError() << endl;
@@ -79,7 +79,7 @@ int main()
     if (!::ReadFile(hDisk, buf, sizeof(buf), &dwRead, NULL) || dwRead != sizeof(buf)) { throw win_error(); return 0; };
     ::CloseHandle(hDisk);
 
-    ofstream out(R"(\\.\D:\\output.txt)");
+    ofstream out(R"(\\.\C:\\Users\\Alser\\Desktop\\fileoutput.txt)");
 
     for (int i = 0; i < 512; i++)
     {
